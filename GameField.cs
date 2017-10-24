@@ -15,47 +15,58 @@ namespace SnakeGame
 
         private Random _rand = new Random();
 
+        //GameField's width and height
         public int Width { get; set; }
         public int Height { get; set; }
 
+        //GameField's texture
         private static Texture _texture = null;
+
+        //Texture size and its getter
         private int _textureSize = 32;
         public int TextureSize { get { return _textureSize; } }
 
-
+        //old console ui code I think
         private List<List<Cell>> _field = new List<List<Cell>>();
         public List<List<Cell>> Field
         {
             get { return _field; }
         }
 
+        //List of Fruits and its getter
         private List<Fruit> _fruits = new List<Fruit>();
         public List<Fruit> Fruits
         {
             get { return _fruits; }
         }
 
-
+        //List of Snakes and its getter
         private List<Snake> _snakes = new List<Snake>();
         public List<Snake> Snakes
         {
             get { return _snakes; }
         }
 
+        //GameField constructor
         public GameField(int aWidth, int aHeight)
         {
             Width = aWidth;
             Height = aHeight;
+
+            //conosle ui code
             InitField();
 
+            //Set GameField's texture
             if(_texture == null)
             {
-                _texture = Texture.LoadFromFile("textures/grass.png");
+               _texture = Texture.LoadFromFile("textures/grass.png");
             }
             
+            //Spawn a fruit somewhere in the GameField
             _fruits.Add(new Fruit(new Point(_rand.Next(aWidth), _rand.Next(aHeight)), this));
         }
-
+        
+        //old console ui code
         private void InitField()
         {
             for (int i = 0; i < Height; i++)
@@ -70,6 +81,7 @@ namespace SnakeGame
             }
         }
 
+        //also old console ui code
         public void ClearField()
         {
             for (int i = 0; i < Height; i++)
@@ -83,12 +95,13 @@ namespace SnakeGame
             }
         }
 
+        //Generate a random point in the GameField
         public Point RandomPointInField()
         {
             return new Point(_rand.Next(Width), _rand.Next(Height));
         }
         
-
+        //Draw GameField's texture
         public void Draw()
         {
 

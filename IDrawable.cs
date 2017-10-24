@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
+    //IDrawable Interface
     public interface IDrawable
     {
         void SetField(GameField aGameField);

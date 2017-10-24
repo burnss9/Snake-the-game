@@ -8,6 +8,7 @@ namespace SnakeGame
 {
     public class Cell
     {
+        //old console ui code
         public static readonly int CELL_SIZE = 32;
 
         public string Val { get; set; }

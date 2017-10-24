@@ -8,6 +8,7 @@ namespace SnakeGameTest
     [TestFixture]
     public class GameFieldTest
     {
+        //old test for console ui
         [Test]
         public void InitFieldTest()
         {
@@ -25,6 +26,7 @@ namespace SnakeGameTest
             }
         }
 
+        //old test for console ui
         [Test]
         public void ClearFieldTest()
         {
@@ -54,7 +56,7 @@ namespace SnakeGameTest
 
         }
 
-
+        //Random point test
         [Test]
         public void RandomPointInFieldTest()
         {
@@ -69,6 +71,7 @@ namespace SnakeGameTest
             }
         }
 
+        //old test for console UI drawing
         [Test]
         public void DrawTest()
         {

@@ -10,16 +10,23 @@ namespace SnakeGame
 {
     public class Fruit : IDrawable
     {
+
+        //Playing field
         private GameField _gameField;
+
+        //Fruit's position
         private Point _position;
 
+        //Fruit's texture
         private static Texture _appleTex = null;
 
+        //Position getter
         public Point Position
         {
             get { return _position; }
         }
 
+        //Fruit constructor
         public Fruit(Point point, GameField gameField)
         {
             _position = new Point(point.X, point.Y);
@@ -30,16 +37,20 @@ namespace SnakeGame
                 _appleTex = Texture.LoadFromFile("textures/apple.png");
             }
         }
+
+        //Set the GameField
         public void SetField(GameField aGameField)
         {
             _gameField = aGameField;
         }
 
+        //Reset the Fruit's position
         public void ResetPosition(Point point)
         {
             _position = new Point(point.X, point.Y);
         }
 
+        //Draw the Fruit's texture
         public void Draw()
         {
             GL.BindTexture(TextureTarget.Texture2D, _appleTex.ID);
