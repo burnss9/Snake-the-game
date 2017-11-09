@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
+    //New UI IDrawable Interface
     abstract class UIComponent : IDrawable
     {
 

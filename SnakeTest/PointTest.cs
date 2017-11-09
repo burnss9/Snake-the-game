@@ -7,6 +7,7 @@ namespace SnakeTest
     [TestFixture]
     public class PointTest
     {
+        //Create 2 Points at 0,0 and make sure they are both at 0,0, and that they'e not the same object
         [Test]
         public void TestPointEqual()
         {
@@ -17,6 +18,7 @@ namespace SnakeTest
             Assert.AreNotSame(p, p2);
         }
 
+        //Create 4 Points at different positions and make sure they aren't in the same position
         [Test]
         public void TestPointNotEqual()
         {

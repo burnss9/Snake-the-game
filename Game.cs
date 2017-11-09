@@ -19,10 +19,11 @@ namespace SnakeGame
 
         private bool _gameOver;
         private int difficulty;//0 for normal mode, 1 for hard
-
+        
         public NetworkManager networkManager;
         public bool hostGame = true;
-
+        
+        //Game constructor
         public Game(int aWidth, int aHeight, int difficulty) : base(32 * aWidth, 32 * aHeight)
         {
             this.difficulty = difficulty;
@@ -36,6 +37,7 @@ namespace SnakeGame
             _gameOver = false;
         }
 
+        //Enable startup stuff when the game loads
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -48,6 +50,7 @@ namespace SnakeGame
             GL.AlphaFunc(AlphaFunction.Gequal, 0.5f);
         }
 
+        //Window resizing to match user dimensions
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
@@ -59,6 +62,7 @@ namespace SnakeGame
             GL.LoadMatrix(ref orth);
         }
 
+        //Graphics stuff
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
@@ -71,7 +75,7 @@ namespace SnakeGame
 
             //Meat
             {
-
+                //Draw the GameField, Snake, and Fruit
                 _gameField.Draw();
 
                 foreach (Snake s in _gameField.Snakes)
@@ -90,7 +94,7 @@ namespace SnakeGame
             SwapBuffers();
         }
 
-
+        //Move the Snake each frame update
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
@@ -104,8 +108,9 @@ namespace SnakeGame
             networkManager.NetworkTick();
 
         }
-
+        
         byte[] serialized = null;
+        //Keyboard input, WASD moves Snake up, down, left, and right
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
             base.OnKeyDown(e);
