@@ -25,11 +25,6 @@ namespace SnakeGame
         
         bool _networkDirty = false;
 
-        private static Texture _snakeHeadTex = null;
-        private static Texture _snakeBodyTex = null;
-
-        Vector4 _snakeColor = new Vector4(175 / 255f, 96 / 255f, 255 / 255f, 1);
-
         //Texture for the Snake's head and body
         private static Texture _snakeHeadTex = null;
         private static Texture _snakeBodyTex = null;
@@ -76,11 +71,6 @@ namespace SnakeGame
         public virtual void Eat(Fruit f)
         {
             Score++;
-
-            _tail.Insert(0, new Point(Head.X, Head.Y));
-
-            eatCount++;
-            System.Console.WriteLine(moveCountMax);
 
             //add to snake and change fruit's position
             _tail.Insert(0, new Point(Head.X,Head.Y));
