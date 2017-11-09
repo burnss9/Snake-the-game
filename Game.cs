@@ -15,20 +15,24 @@ namespace SnakeGame
     {
 
         private GameField _gameField;
+        public GameField gameField { get { return _gameField; } }
+
         private bool _gameOver;
         private int difficulty;//0 for normal mode, 1 for hard
 
+        public NetworkManager networkManager;
+        public bool hostGame = true;
 
         public Game(int aWidth, int aHeight, int difficulty) : base(32 * aWidth, 32 * aHeight)
         {
             this.difficulty = difficulty;
-            _gameField = new GameField(aWidth, aHeight);
+            _gameField = new GameField(aWidth, aHeight, this);
 
-            if (difficulty == 0)
-                _gameField.Snakes.Add(new Snake(new Point(aWidth / 2, aHeight / 2), _gameField));
-            else _gameField.Snakes.Add(new SnakeHard(new Point(aWidth / 2, aHeight / 2), _gameField));
-
-
+            networkManager = new NetworkManager(this, hostGame, 10);
+            if (hostGame)
+            {
+                networkManager.RegisterPlayer(null);
+            }
             _gameOver = false;
         }
 
@@ -70,7 +74,7 @@ namespace SnakeGame
 
                 _gameField.Draw();
 
-                foreach(Snake s in _gameField.Snakes)
+                foreach (Snake s in _gameField.Snakes)
                 {
                     s.Draw();
                 }
@@ -92,47 +96,81 @@ namespace SnakeGame
             base.OnUpdateFrame(e);
             _gameField.ClearField();
 
-
             foreach (Snake s in _gameField.Snakes)
             {
-                s.Move();
+                s.Tick(e.Time);
             }
+
+            networkManager.NetworkTick();
 
         }
 
+        byte[] serialized = null;
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
             base.OnKeyDown(e);
 
-            if(e.Key == Key.W)
+            Snake turningSnake = null;
+            foreach (Snake s in _gameField.Snakes)
             {
-                foreach(Snake s in _gameField.Snakes)
+                if (s.objectNetID.OwnerID == networkManager.LocalClientID)
                 {
-                    s.SetDirection(Direction.Up);
+                    turningSnake = s;
+                    break;
+                }
+            }
+
+            if (e.Key == Key.W)
+            {
+                if (turningSnake != null)
+                {
+                    turningSnake.SetDirection(Direction.Up);
                 }
             }
             if (e.Key == Key.A)
             {
-                foreach (Snake s in _gameField.Snakes)
+                if(turningSnake != null)
                 {
-                    s.SetDirection(Direction.Left);
+                    turningSnake.SetDirection(Direction.Left);
                 }
             }
             if (e.Key == Key.S)
             {
-                foreach (Snake s in _gameField.Snakes)
+                if(turningSnake != null)
                 {
-                    s.SetDirection(Direction.Down);
+                    turningSnake.SetDirection(Direction.Down);
                 }
             }
             if (e.Key == Key.D)
             {
-                foreach (Snake s in _gameField.Snakes)
+                if(turningSnake != null)
                 {
-                    s.SetDirection(Direction.Right);
+                    turningSnake.SetDirection(Direction.Right);
                 }
             }
 
+            if(e.Key == Key.Comma)
+            {
+                serialized = turningSnake.Serialize();
+            }
+            if (e.Key == Key.Period && serialized != null) 
+            {
+                turningSnake.Deserialize(serialized);
+            }
+
+        }
+
+
+        public Snake RegisterSnake(ObjectNetID ID)
+        {
+
+            Snake snake = new Snake(_gameField.RandomPointInField(), _gameField)
+            {
+                objectNetID = ID
+            };
+
+            _gameField.Snakes.Add(snake);
+            return snake;
         }
 
     }

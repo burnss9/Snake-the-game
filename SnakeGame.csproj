@@ -46,7 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cell.cs" />
+    <Compile Include="ISerializable.cs" />
     <Compile Include="MainMenu.cs" />
+    <Compile Include="NetworkManager.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Fruit.cs" />
     <Compile Include="Game.cs" />

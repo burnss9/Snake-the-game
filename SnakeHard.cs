@@ -4,7 +4,7 @@
     {
         public SnakeHard(Point point, GameField gameField) : base(point, gameField)
         {
-            moveCountMax = 17;
+            MoveDelay = 0.2;
         }
 
         public override void Move()
@@ -21,8 +21,10 @@
         public override void Eat(Fruit f)
         {
             base.Eat(f);
-            if (eatCount % 5 == 0 && moveCountMax > 6)
-                moveCountMax--;
+            if (Score % 3 == 0 && MoveDelay > 0.05)
+            {
+                MoveDelay -= 0.025;
+            }
         }
     }
 }

@@ -22,6 +22,8 @@ namespace SnakeGame
         private int _textureSize = 32;
         public int TextureSize { get { return _textureSize; } }
 
+        private Game _game;
+        public Game game { get { return _game; } }
 
         private List<List<Cell>> _field = new List<List<Cell>>();
         public List<List<Cell>> Field
@@ -42,13 +44,15 @@ namespace SnakeGame
             get { return _snakes; }
         }
 
-        public GameField(int aWidth, int aHeight)
+        public GameField(int aWidth, int aHeight, Game game)
         {
             Width = aWidth;
             Height = aHeight;
             InitField();
 
-            if(_texture == null)
+            _game = game;
+
+            if (_texture == null)
             {
                 _texture = Texture.LoadFromFile("textures/grass.png");
             }

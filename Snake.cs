@@ -9,19 +9,23 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    public class Snake : IMovable, IDrawable
+    public class Snake : IMovable, IDrawable, ISerializable
     {
+        public ObjectNetID objectNetID;
+
         private Direction Dir = Direction.Up;
-        protected int moveCounter = 0;
-        protected int moveCountMax = 20;//lower to make snake faster
-        protected int eatCount = 0;
+        protected double TimeSinceLastMove = 0;
+        protected double MoveDelay = 0.2;//lower to make snake faster
+        protected int Score = 0;
 
         protected GameField _gameField;
+
+        bool _networkDirty = false;
 
         private static Texture _snakeHeadTex = null;
         private static Texture _snakeBodyTex = null;
 
-        Vector4 _snakeColor = new Vector4(175/255f, 96/255f, 255/255f, 1);
+        Vector4 _snakeColor = new Vector4(175 / 255f, 96 / 255f, 255 / 255f, 1);
 
         public Point Head { get; set; }
         private List<Point> _tail = new List<Point>();
@@ -29,18 +33,18 @@ namespace SnakeGame
         {
             get { return _tail; }
         }
-    
+
 
         public Snake(Point point, GameField gameField)
         {
             Head = new Point(point.X, point.Y);
             SetField(gameField);
 
-            if(_snakeHeadTex == null)
+            if (_snakeHeadTex == null)
             {
                 _snakeHeadTex = Texture.LoadFromFile("textures/snakehead.png");
             }
-            if(_snakeBodyTex == null)
+            if (_snakeBodyTex == null)
             {
                 _snakeBodyTex = Texture.LoadFromFile("textures/snakebody.png");
             }
@@ -54,9 +58,9 @@ namespace SnakeGame
 
         public virtual void Eat(Fruit f)
         {
-            eatCount++;
-            System.Console.WriteLine(moveCountMax);
-            _tail.Insert(0, new Point(Head.X,Head.Y));
+            Score++;
+
+            _tail.Insert(0, new Point(Head.X, Head.Y));
             f.ResetPosition(_gameField.RandomPointInField());
         }
 
@@ -83,16 +87,31 @@ namespace SnakeGame
             }
             else
             {
+
                 Dir = direction;
+                if (_gameField.game.networkManager.isServer)
+                {
+                    _networkDirty = true;
+                } else
+                {
+                    byte[] msg = Encoding.ASCII.GetBytes("Turn:").Concat(BitConverter.GetBytes((Int16)direction)).ToArray();
+                    _gameField.game.networkManager.Host.Send(msg);
+                }
             }
+
+
         }
-        
+
         public virtual void Move()
         {
-            moveCounter++;
-            if (moveCounter < moveCountMax)
+
+            if (TimeSinceLastMove < MoveDelay)
+            {
                 return;
-            moveCounter = 0;
+            }
+
+            TimeSinceLastMove = 0;
+            Serialize();
 
             _tail.Insert(0, new Point(Head.X, Head.Y));
             _tail.RemoveAt(_tail.Count - 1);
@@ -120,6 +139,12 @@ namespace SnakeGame
                     break;
             }
             wrap();
+        }
+
+        internal void Tick(double deltaTime)
+        {
+            TimeSinceLastMove += deltaTime;
+            Move();
         }
 
         //if snake goes outside play area wrap coordinates
@@ -152,23 +177,23 @@ namespace SnakeGame
 
             GL.Begin(PrimitiveType.Quads);
             GL.Color4(_snakeColor);
-            
+
 
             GL.TexCoord2(0, 0);
             GL.Vertex3(0, 0, -6);
             GL.TexCoord2(0, 1);
             GL.Vertex3(0, 32, -6);
             GL.TexCoord2(1, 1);
-            GL.Vertex3(32,  32, -6);
+            GL.Vertex3(32, 32, -6);
             GL.TexCoord2(1, 0);
-            GL.Vertex3( 32, 0, -6);
+            GL.Vertex3(32, 0, -6);
 
             GL.End();
             GL.PopMatrix();
-            
+
             GL.BindTexture(TextureTarget.Texture2D, _snakeBodyTex.ID);
 
-            foreach(Point p in Tail)
+            foreach (Point p in Tail)
             {
 
                 GL.PushMatrix();
@@ -191,6 +216,70 @@ namespace SnakeGame
 
 
         }
-        
+
+        public byte[] Serialize()
+        {
+
+            var DirectionBytes = BitConverter.GetBytes((short)Dir);
+
+            var HeadBytes = BitConverter.GetBytes(Head.X).Concat(BitConverter.GetBytes(Head.Y)).ToArray();
+
+            var TailCountBytes = BitConverter.GetBytes(Tail.Count());
+
+            IEnumerable<byte> TailBytes = new byte[0];
+            foreach (Point p in Tail)
+            {
+                TailBytes = TailBytes.Concat(BitConverter.GetBytes(p.X).Concat(BitConverter.GetBytes(p.Y)));
+            }
+
+            byte[] Serialized = DirectionBytes.Concat(HeadBytes).Concat(TailCountBytes).Concat(TailBytes).ToArray();
+
+            return Serialized;
+
+        }
+
+        public void Deserialize(byte[] Serialized)
+        {
+            int readBytes = 0;
+
+            Dir = (Direction)BitConverter.ToInt16(Serialized, 0);
+            readBytes += sizeof(Int16);
+
+            int headX = BitConverter.ToInt32(Serialized, readBytes);
+            readBytes += sizeof(Int32);
+            int headY = BitConverter.ToInt32(Serialized, readBytes);
+            readBytes += sizeof(Int32);
+
+            Head = new Point(headX, headY);
+
+            int TailCount = BitConverter.ToInt32(Serialized, readBytes);
+            readBytes += sizeof(Int32);
+
+            List<Point> newTail = new List<Point>();
+
+            for (int i = 0; i < TailCount; i++)
+            {
+                int tailX = BitConverter.ToInt32(Serialized, readBytes);
+                readBytes += sizeof(Int32);
+                int tailY = BitConverter.ToInt32(Serialized, readBytes);
+                readBytes += sizeof(Int32);
+
+                newTail.Add(new Point(tailX, tailY));
+
+            }
+
+            _tail = newTail;
+
+        }
+
+        public bool isNetworkDirty()
+        {
+            return _networkDirty;
+        }
+
+        public void setNetworkClean(bool clean)
+        {
+            _networkDirty = !clean;
+        }
     }
 }
