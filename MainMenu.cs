@@ -11,16 +11,17 @@ namespace SnakeGame
     {
 
         UIComponent SelectedElement;
-
+        UIComponent _join, _host;
         public MainMenu()
         {
-            
-
+            _join = new Button("textures/join.png");
+            _host = new Button("textures/host.png");
         }
 
         public void Draw()
         {
-            throw new NotImplementedException();
+            _host.Draw();
+            _join.Draw();
         }
 
         public void SetField(GameField aGameField)
