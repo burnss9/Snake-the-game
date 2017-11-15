@@ -51,7 +51,7 @@ namespace SnakeGame
         }
 
         //GameField constructor
-        public GameField(int aWidth, int aHeight, Game game)
+        public GameField(int aWidth, int aHeight, Game game, bool loadTexture = true)
     
         {
             Width = aWidth;
@@ -64,13 +64,13 @@ namespace SnakeGame
 
             if (_texture == null)
             //Set GameField's texture
-            if(_texture == null)
+            if(_texture == null && loadTexture)
             {
                _texture = Texture.LoadFromFile("textures/grass.png");
             }
             
             //Spawn a fruit somewhere in the GameField
-            _fruits.Add(new Fruit(new Point(_rand.Next(aWidth), _rand.Next(aHeight)), this));
+            _fruits.Add(new Fruit(new Point(_rand.Next(aWidth), _rand.Next(aHeight)), this, loadTexture));
         }
         
         //old console ui code

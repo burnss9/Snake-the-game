@@ -27,12 +27,12 @@ namespace SnakeGame
         }
 
         //Fruit constructor
-        public Fruit(Point point, GameField gameField)
+        public Fruit(Point point, GameField gameField, bool loadTexture = true)
         {
             _position = new Point(point.X, point.Y);
             SetField(gameField);
 
-            if(_appleTex == null)
+            if(_appleTex == null && loadTexture)
             {
                 _appleTex = Texture.LoadFromFile("textures/apple.png");
             }

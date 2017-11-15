@@ -14,7 +14,7 @@ namespace SnakeGame
         public ObjectNetID objectNetID;
 
         //Snake Direction
-        private Direction Dir = Direction.Up;
+        private Direction Dir = Direction.Stop;
         protected double TimeSinceLastMove = 0;
         protected double MoveDelay = 0.2;//lower to make snake faster
         protected int Score = 0;
@@ -45,17 +45,17 @@ namespace SnakeGame
         }
     
         //Snake constructor
-        public Snake(Point point, GameField gameField)
+        public Snake(Point point, GameField gameField, bool loadTexture = true)
         {
             Head = new Point(point.X, point.Y);
             SetField(gameField);
 
             //set head and body textures
-            if (_snakeHeadTex == null)
+            if (_snakeHeadTex == null && loadTexture)
             {
                 _snakeHeadTex = Texture.LoadFromFile("textures/snakehead.png");
             }
-            if (_snakeBodyTex == null)
+            if (_snakeBodyTex == null && loadTexture)
             {
                 _snakeBodyTex = Texture.LoadFromFile("textures/snakebody.png");
             }
@@ -103,10 +103,10 @@ namespace SnakeGame
             {
 
                 Dir = direction;
-                if (_gameField.game.networkManager.isServer)
+                if (_gameField?.game?.networkManager?.isServer == null ? false : _gameField.game.networkManager.isServer)
                 {
                     _networkDirty = true;
-                } else
+                } else if (_gameField?.game?.networkManager?.isServer == null ? false : !_gameField.game.networkManager.isServer)
                 {
                     byte[] msg = Encoding.ASCII.GetBytes("Turn:").Concat(BitConverter.GetBytes((Int16)direction)).ToArray();
                     _gameField.game.networkManager.Host.Send(msg);
@@ -117,10 +117,10 @@ namespace SnakeGame
         }        
 
         //Move the Snake
-        public virtual void Move()
+        public virtual void Move(bool forceUpdate = false)
         {
 
-            if (TimeSinceLastMove < MoveDelay)
+            if (TimeSinceLastMove < MoveDelay && !forceUpdate)
             {
                 return;
             }

@@ -13,6 +13,6 @@ namespace SnakeGame
     public interface IMovable
     {
         void SetDirection(Direction direction);
-        void Move();
+        void Move(bool forceUpdate = false);
     }
 }

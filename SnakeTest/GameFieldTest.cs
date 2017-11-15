@@ -12,7 +12,7 @@ namespace SnakeGameTest
         [Test]
         public void InitFieldTest()
         {
-            GameField gameField = new GameField(10, 10);
+            GameField gameField = new GameField(10, 10, null, false);
             
             Assert.AreEqual(gameField.Field.Count, 10);
             for (int i = 0; i < 10; i++)
@@ -30,7 +30,7 @@ namespace SnakeGameTest
         [Test]
         public void ClearFieldTest()
         {
-            GameField gameField = new GameField(10, 10);
+            GameField gameField = new GameField(10, 10, null);
             
             foreach(var list in gameField.Field)
             {
@@ -60,7 +60,7 @@ namespace SnakeGameTest
         [Test]
         public void RandomPointInFieldTest()
         {
-            GameField gameField = new GameField(10, 10);
+            GameField gameField = new GameField(10, 10, null);
 
             for(int i = 0; i < 100; i++)
             {
@@ -75,7 +75,7 @@ namespace SnakeGameTest
         [Test]
         public void DrawTest()
         {
-            GameField gameField = new GameField(5, 5);
+            GameField gameField = new GameField(5, 5, null);
 
             using (System.IO.StringWriter stringWriter = new System.IO.StringWriter())
             {

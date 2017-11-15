@@ -7,7 +7,7 @@
             MoveDelay = 0.2;
         }
 
-        public override void Move()
+        public override void Move(bool forceUpdate = false)
         {
             base.Move();
 
