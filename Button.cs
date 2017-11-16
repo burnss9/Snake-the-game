@@ -12,10 +12,13 @@ namespace SnakeGame
     {
         private bool host;
         protected Texture _butTex= null;
-        public Button(String path)
+        private int _x, _y;
+        public Button(String path, int x, int y)
         {
             if (_butTex == null)
                 _butTex = Texture.LoadFromFile(path);
+            _x = x;
+            _y = y;
         }
         public override void Draw()
         {
@@ -28,13 +31,13 @@ namespace SnakeGame
 
 
             GL.TexCoord2(0, 0);
-            GL.Vertex3(0, 0, -6);
+            GL.Vertex3(_x, _y, -6);
             GL.TexCoord2(0, 1);
-            GL.Vertex3(0, 50, -6);
+            GL.Vertex3(_x, _y+50, -6);
             GL.TexCoord2(1, 1);
-            GL.Vertex3(200, 50, -6);
+            GL.Vertex3(_x+200,_y+ 50, -6);
             GL.TexCoord2(1, 0);
-            GL.Vertex3(200, 0, -6);
+            GL.Vertex3(_x+200, _y, -6);
 
             GL.End();
             GL.PopMatrix();

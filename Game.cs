@@ -13,7 +13,6 @@ namespace SnakeGame
 {
     public class Game : GameWindow
     {
-        private Button _but;
 
         private GameField _gameField;
         public GameField gameField { get { return _gameField; } }
@@ -29,7 +28,6 @@ namespace SnakeGame
         {
             this.difficulty = difficulty;
             _gameField = new GameField(aWidth, aHeight, this);
-            _but = new Button("textures/host.png");
             networkManager = new NetworkManager(this, hostGame, 10);
             if (hostGame)
             {
@@ -78,7 +76,6 @@ namespace SnakeGame
             {
                 //Draw the GameField, Snake, and Fruit
                 _gameField.Draw();
-                _but.Draw();
 
                 foreach (Snake s in _gameField.Snakes)
                 {
@@ -155,7 +152,10 @@ namespace SnakeGame
                     turningSnake.SetDirection(Direction.Right);
                 }
             }
-
+            if(e.Key == Key.Escape)
+            {
+                //too be used for pause menu
+            }
             if(e.Key == Key.Comma)
             {
                 serialized = turningSnake.Serialize();
