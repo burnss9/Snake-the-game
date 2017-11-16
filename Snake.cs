@@ -178,10 +178,36 @@ namespace SnakeGame
                 {
                     if (Head.Equals(p))
                     {
-                        System.Environment.Exit(1);
+
+                        //respawn for now 
+                        if (_gameField?.game?.networkManager?.isServer == null ? false : _gameField.game.networkManager.isServer)
+                        {
+
+                            Respawn();
+                            _networkDirty = true;
+
+
+                        }
+                        else if (_gameField?.game?.networkManager?.isServer == null ? false : !_gameField.game.networkManager.isServer)
+                        {
+                            //client prediction potentially unecessary but leaving this in for the future
+                        }
+
+
                     }
                 }
             }
+        }
+
+        private void Respawn()
+        {
+
+            _tail = new List<Point>();
+
+            Dir = Direction.Stop;
+
+            Head = _gameField.RandomPointInField();
+
         }
 
         //Draw Snake's textures

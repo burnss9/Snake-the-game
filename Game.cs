@@ -24,14 +24,19 @@ namespace SnakeGame
         public bool hostGame = true;
         
         //Game constructor
-        public Game(int aWidth, int aHeight, int difficulty) : base(32 * aWidth, 32 * aHeight)
+        public Game(int aWidth, int aHeight, int difficulty, string ip = "") : base(32 * aWidth, 32 * aHeight)
         {
             this.difficulty = difficulty;
             _gameField = new GameField(aWidth, aHeight, this);
-            networkManager = new NetworkManager(this, hostGame, 10);
+
+            hostGame = ip == "" ? true : false;
+
+            networkManager = new NetworkManager(this, hostGame, 10, ip);
+
             if (hostGame)
             {
                 networkManager.RegisterPlayer(null);
+                networkManager.RegisterFruit();
             }
             _gameOver = false;
         }
@@ -167,6 +172,15 @@ namespace SnakeGame
 
         }
 
+        public Fruit RegisterFruit(ObjectNetID objectNetID)
+        {
+
+            Fruit f = new Fruit(_gameField.RandomPointInField(), _gameField);
+
+            _gameField.Fruits.Add(f);
+
+            return f;
+        }
 
         public Snake RegisterSnake(ObjectNetID ID)
         {

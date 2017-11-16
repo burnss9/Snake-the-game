@@ -64,10 +64,12 @@ namespace SnakeGame
         int TickDelay = 10;
 
 
-        public NetworkManager(Game game, bool isServer, int TickDelay)
+        public NetworkManager(Game game, bool isServer, int TickDelay, string ip = "")
         {
             this.game = game;
             this.isServer = isServer;
+
+            hostAddress = ip;
 
             if (isServer)
             {
@@ -121,6 +123,25 @@ namespace SnakeGame
                 o.Value.setNetworkClean(false);
             }
 
+        }
+
+
+        public void RegisterFruit()
+        {
+
+            int id = 0;
+
+            byte[] playerJoinInfo = BitConverter.GetBytes(id);
+
+            ObjectNetID objectNetID = new ObjectNetID(Objects++, id);
+
+            NetworkObjects.Add(objectNetID, game.RegisterFruit(objectNetID));
+
+
+            foreach (var o in NetworkObjects)
+            {
+                o.Value.setNetworkClean(false);
+            }
 
         }
 
@@ -216,11 +237,29 @@ namespace SnakeGame
                             Console.WriteLine("adding network object: " + objectID + " " + ownerID);
                             Console.WriteLine(Encoding.ASCII.GetChars(obj));
 
-                            Snake s = new Snake(new Point(2, 2), game.gameField);
-                            game.gameField.Snakes.Add(s);
-                            s.Deserialize(obj);
-                            s.objectNetID = new ObjectNetID(objectID, ownerID);
-                            NetworkObjects.Add(s.objectNetID, s);
+                            switch (objClass)
+                            {
+                                case 1:
+
+
+                                    Snake s = new Snake(new Point(2, 2), game.gameField);
+                                    game.gameField.Snakes.Add(s);
+                                    s.Deserialize(obj);
+                                    s.objectNetID = new ObjectNetID(objectID, ownerID);
+                                    NetworkObjects.Add(s.objectNetID, s);
+                                    break;
+
+                                case 2:
+
+                                    Fruit f = new Fruit(new Point(0, 0), game.gameField);
+                                    game.gameField.Fruits.Add(f);
+                                    f.Deserialize(obj);
+                                    f.objectNetID = new ObjectNetID(objectID, ownerID);
+                                    NetworkObjects.Add(f.objectNetID, f);
+
+                                    break;
+                            }
+
                         }
 
                     }
@@ -251,7 +290,13 @@ namespace SnakeGame
                         }
                         pair.Value.setNetworkClean(true);
 
-                        byte[] classID = BitConverter.GetBytes(1);
+                        int cid = 1;
+
+                        if (pair.Value is Fruit) {
+                            cid = 2;
+                        }
+
+                        byte[] classID = BitConverter.GetBytes(cid);
 
                         byte[] objectBytes = pair.Value.Serialize();
 

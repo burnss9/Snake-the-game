@@ -69,8 +69,6 @@ namespace SnakeGame
                _texture = Texture.LoadFromFile("textures/grass.png");
             }
             
-            //Spawn a fruit somewhere in the GameField
-            _fruits.Add(new Fruit(new Point(_rand.Next(aWidth), _rand.Next(aHeight)), this, loadTexture));
         }
         
         //old console ui code

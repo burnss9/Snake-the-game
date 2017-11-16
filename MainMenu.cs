@@ -99,6 +99,7 @@ namespace SnakeGame
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
+
             base.OnMouseDown(e);
             if (Mouse.X > 199 && Mouse.X < 400)
             if ( Mouse.Y > 99 && Mouse.Y < 150)
@@ -115,6 +116,15 @@ namespace SnakeGame
             else if(Mouse.Y > 199 && Mouse.Y < 250)
                 {
                     //do joind code
+
+                    using (Game game = new Game(15, 15, 1, "localhost"))//third int = 0 for normal or 1 for hard
+                    {
+                        //Run the game
+                        game.Run(120, 60);
+                    }
+
+
+
                 }
         }
     }
