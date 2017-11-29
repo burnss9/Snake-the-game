@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -53,6 +54,7 @@ namespace SnakeGame
         public Dictionary<int, Socket> Clients = new Dictionary<int, Socket>();
 
         public Socket Host = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        public ServerSocket ServerSocket;
 
         public Game game;
         public bool isServer;
@@ -74,7 +76,7 @@ namespace SnakeGame
             if (isServer)
             {
                 Console.WriteLine("");
-                ServerSocket ServerSocket = new ServerSocket(this);
+                this.ServerSocket = new ServerSocket(this);
             }
             else
             {
@@ -96,6 +98,8 @@ namespace SnakeGame
             }
 
         }
+
+
 
         public void RegisterPlayer(Socket s)
         {
@@ -323,10 +327,23 @@ namespace SnakeGame
 
 
                 }
+                
             }
+
+            
+        }
+        public void setActive(bool activeToSet)
+        {
+            ServerSocket.setActive(false);
+        }
+
+        public void closeSocket()
+        {
+            ServerSocket.closeSocket();
         }
 
     }
+
 
     public class ServerSocket
     {
@@ -340,6 +357,17 @@ namespace SnakeGame
         {
             this.manager = manager;
             new Thread(Listen).Start();
+
+        }
+
+        public void setActive(bool activeToSet)
+        {
+            active = activeToSet;
+        }
+
+        public void closeSocket()
+        {
+            socket.Close();
 
         }
 
@@ -362,10 +390,18 @@ namespace SnakeGame
 
             while (active)
             {
-                Console.WriteLine("accepting...");
-                manager.RegisterPlayer(socket.Accept());
-                Console.WriteLine("Accepted?");
-
+                Console.Clear();
+                Console.WriteLine("Accepting...");
+                   
+                try
+                {
+                    manager.RegisterPlayer(socket.Accept());
+                    Console.WriteLine("Accepted");
+                }
+                catch (SocketException se)
+                {
+                Console.WriteLine("Server Closed");
+                }
             }
 
         }

@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Cell.cs" />
     <Compile Include="Button.cs" />
+    <Compile Include="InGameMenu.cs" />
     <Compile Include="ISerializable.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="NetworkManager.cs" />
@@ -76,6 +77,9 @@
     <Content Include="textures\apple.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="textures\exit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="textures\grass.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -83,6 +87,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="textures\join.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="textures\main_menu.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="textures\resume.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="textures\snakebody.png">

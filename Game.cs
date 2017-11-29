@@ -91,7 +91,7 @@ namespace SnakeGame
                 {
                     f.Draw();
                 }
-
+                
 
             }
 
@@ -159,7 +159,8 @@ namespace SnakeGame
             }
             if(e.Key == Key.Escape)
             {
-                //too be used for pause menu
+                using (InGameMenu inGame = new InGameMenu(this))
+                    inGame.Run(120, 60);
             }
             if(e.Key == Key.Comma)
             {
