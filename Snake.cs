@@ -14,7 +14,7 @@ namespace SnakeGame
         public ObjectNetID objectNetID;
 
         //Snake Direction
-        private Direction Dir = Direction.Stop;
+        public Direction Dir = Direction.Stop;
         protected double TimeSinceLastMove = 0;
         protected double MoveDelay = 0.2;//lower to make snake faster
         protected int Score = 0;
@@ -22,7 +22,7 @@ namespace SnakeGame
 
         //The playing field
         protected GameField _gameField;
-        
+
         bool _networkDirty = false;
 
         //Texture for the Snake's head and body
@@ -30,7 +30,8 @@ namespace SnakeGame
         private static Texture _snakeBodyTex = null;
 
         //color of the Snake
-        Vector4 _snakeColor = new Vector4(175/255f, 96/255f, 255/255f, 1);
+        Vector4 _snakeColor = new Vector4(175 / 255f, 96 / 255f, 255 / 255f, 1);
+        public Vector4 SnakeColor { get { return _snakeColor; } }
 
         //Get and Set the Snake's Head
         public Point Head { get; set; }
@@ -43,7 +44,7 @@ namespace SnakeGame
         {
             get { return _tail; }
         }
-    
+
         //Snake constructor
         public Snake(Point point, GameField gameField, bool loadTexture = true)
         {
@@ -78,7 +79,7 @@ namespace SnakeGame
             Score++;
 
             //add to snake and change fruit's position
-            _tail.Insert(0, new Point(Head.X,Head.Y));
+            _tail.Insert(0, new Point(Head.X, Head.Y));
             f.ResetPosition(_gameField.RandomPointInField());
         }
 
@@ -111,7 +112,8 @@ namespace SnakeGame
                 if (_gameField?.game?.networkManager?.isServer == null ? false : _gameField.game.networkManager.isServer)
                 {
                     _networkDirty = true;
-                } else if (_gameField?.game?.networkManager?.isServer == null ? false : !_gameField.game.networkManager.isServer)
+                }
+                else if (_gameField?.game?.networkManager?.isServer == null ? false : !_gameField.game.networkManager.isServer)
                 {
                     byte[] msg = Encoding.ASCII.GetBytes("Turn:").Concat(BitConverter.GetBytes((Int16)direction)).ToArray();
                     _gameField.game.networkManager.Host.Send(msg);
@@ -119,7 +121,7 @@ namespace SnakeGame
             }
 
 
-        }        
+        }
 
         //Move the Snake
         public virtual void Move(bool forceUpdate = false)
@@ -160,7 +162,7 @@ namespace SnakeGame
                 default:
                     break;
             }
-            wrap();
+            wrap(forceUpdate);
         }
 
         internal void Tick(double deltaTime)
@@ -170,7 +172,7 @@ namespace SnakeGame
         }
 
         //if snake goes outside play area wrap coordinates
-        private void wrap()
+        private void wrap(bool forceCheck = false)
         {
             if (Head.X > _gameField.Width - 1) Head.X = 0;
             if (Head.X < 0) Head.X = _gameField.Width - 1;
@@ -185,7 +187,7 @@ namespace SnakeGame
                     {
 
                         //respawn for now 
-                        if (_gameField?.game?.networkManager?.isServer == null ? false : _gameField.game.networkManager.isServer)
+                        if ((_gameField?.game?.networkManager?.isServer == null ? false : _gameField.game.networkManager.isServer) || forceCheck)
                         {
 
                             Respawn();
@@ -270,7 +272,7 @@ namespace SnakeGame
             var DirectionBytes = BitConverter.GetBytes((short)Dir);
 
             var HeadBytes = BitConverter.GetBytes(Head.X).Concat(BitConverter.GetBytes(Head.Y)).ToArray();
-            
+
             var ColorBytes = BitConverter.GetBytes(_snakeColor.X).Concat(BitConverter.GetBytes(_snakeColor.Y)).Concat(BitConverter.GetBytes(_snakeColor.Z)).Concat(BitConverter.GetBytes(_snakeColor.W)).ToArray();
 
             var TailCountBytes = BitConverter.GetBytes(Tail.Count());
@@ -281,7 +283,7 @@ namespace SnakeGame
                 TailBytes = TailBytes.Concat(BitConverter.GetBytes(p.X).Concat(BitConverter.GetBytes(p.Y)));
             }
 
-            byte[] Serialized = DirectionBytes.Concat(HeadBytes).Concat(TailCountBytes).Concat(TailBytes).ToArray();
+            byte[] Serialized = DirectionBytes.Concat(HeadBytes).Concat(ColorBytes).Concat(TailCountBytes).Concat(TailBytes).ToArray();
 
             return Serialized;
 
@@ -302,13 +304,13 @@ namespace SnakeGame
             Head = new Point(headX, headY);
 
 
-            float colorX = (float)BitConverter.ToInt32(Serialized, readBytes);
+            float colorX = BitConverter.ToSingle(Serialized, readBytes);
             readBytes += sizeof(float);
-            float colorY = (float)BitConverter.ToInt32(Serialized, readBytes);
+            float colorY = BitConverter.ToSingle(Serialized, readBytes);
             readBytes += sizeof(float);
-            float colorZ = (float)BitConverter.ToInt32(Serialized, readBytes);
+            float colorZ = BitConverter.ToSingle(Serialized, readBytes);
             readBytes += sizeof(float);
-            float colorW = (float)BitConverter.ToInt32(Serialized, readBytes);
+            float colorW = BitConverter.ToSingle(Serialized, readBytes);
             readBytes += sizeof(float);
 
             _snakeColor = new Vector4(colorX, colorY, colorZ, colorW);
