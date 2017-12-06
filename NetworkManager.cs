@@ -88,7 +88,7 @@ namespace SnakeGame
                     Host.Receive(message);
                     Console.WriteLine("received");
                     LocalClientID = BitConverter.ToInt32(message, 0);
-
+                    
                 }
                 catch (Exception)
                 {
@@ -120,6 +120,7 @@ namespace SnakeGame
             {
                 Clients.Add(id, s);
                 s.SendAsync(args);
+
             }
 
             foreach (var o in NetworkObjects)
@@ -398,7 +399,7 @@ namespace SnakeGame
                     manager.RegisterPlayer(socket.Accept());
                     Console.WriteLine("Accepted");
                 }
-                catch (SocketException se)
+                catch (SocketException)
                 {
                 Console.WriteLine("Server Closed");
                 }

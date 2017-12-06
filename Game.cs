@@ -191,6 +191,10 @@ namespace SnakeGame
                 objectNetID = ID
             };
 
+            Random r = new Random();
+
+            snake.SetColor((byte)r.Next(256), (byte)r.Next(256), (byte)r.Next(256));
+
             _gameField.Snakes.Add(snake);
             return snake;
         }

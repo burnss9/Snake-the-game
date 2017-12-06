@@ -67,6 +67,11 @@ namespace SnakeGame
             _gameField = aGameField;
         }
 
+        public void SetColor(byte R, byte G, byte B)
+        {
+            _snakeColor = new Vector4(R / 255f, G / 255f, B / 255f, 1);
+        }
+
         //Eat the fruit
         public virtual void Eat(Fruit f)
         {
@@ -265,6 +270,8 @@ namespace SnakeGame
             var DirectionBytes = BitConverter.GetBytes((short)Dir);
 
             var HeadBytes = BitConverter.GetBytes(Head.X).Concat(BitConverter.GetBytes(Head.Y)).ToArray();
+            
+            var ColorBytes = BitConverter.GetBytes(_snakeColor.X).Concat(BitConverter.GetBytes(_snakeColor.Y)).Concat(BitConverter.GetBytes(_snakeColor.Z)).Concat(BitConverter.GetBytes(_snakeColor.W)).ToArray();
 
             var TailCountBytes = BitConverter.GetBytes(Tail.Count());
 
@@ -293,6 +300,18 @@ namespace SnakeGame
             readBytes += sizeof(Int32);
 
             Head = new Point(headX, headY);
+
+
+            float colorX = (float)BitConverter.ToInt32(Serialized, readBytes);
+            readBytes += sizeof(float);
+            float colorY = (float)BitConverter.ToInt32(Serialized, readBytes);
+            readBytes += sizeof(float);
+            float colorZ = (float)BitConverter.ToInt32(Serialized, readBytes);
+            readBytes += sizeof(float);
+            float colorW = (float)BitConverter.ToInt32(Serialized, readBytes);
+            readBytes += sizeof(float);
+
+            _snakeColor = new Vector4(colorX, colorY, colorZ, colorW);
 
             int TailCount = BitConverter.ToInt32(Serialized, readBytes);
             readBytes += sizeof(Int32);
