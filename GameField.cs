@@ -29,12 +29,6 @@ namespace SnakeGame
         private Game _game;
         public Game game { get { return _game; } }
         
-        //old console ui code I think
-        private List<List<Cell>> _field = new List<List<Cell>>();
-        public List<List<Cell>> Field
-        {
-            get { return _field; }
-        }
 
         //List of Fruits and its getter
         private List<Fruit> _fruits = new List<Fruit>();
@@ -56,9 +50,6 @@ namespace SnakeGame
         {
             Width = aWidth;
             Height = aHeight;
-
-            //conosle ui code
-            InitField();
             
             _game = game;
 
@@ -71,34 +62,6 @@ namespace SnakeGame
             
         }
         
-        //old console ui code
-        private void InitField()
-        {
-            for (int i = 0; i < Height; i++)
-            {
-                List<Cell> lRow = new List<Cell>();
-                for (int j = 0; j < Width; j++)
-                {
-                    Cell lCell = new Cell(" ", ConsoleColor.White);
-                    lRow.Add(lCell);
-                }
-                _field.Add(lRow);
-            }
-        }
-
-        //also old console ui code
-        public void ClearField()
-        {
-            for (int i = 0; i < Height; i++)
-            {
-                //List<string> lRow = new List<string>();
-                for (int j = 0; j < Width; j++)
-                {
-                    _field[i][j].Val = " ";
-                    _field[i][j].Color = ConsoleColor.White;
-                }
-            }
-        }
 
         //Generate a random point in the GameField
         public Point RandomPointInField()

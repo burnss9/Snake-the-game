@@ -62,6 +62,11 @@ namespace SnakeGameTest
         {
             //Create a GameField and spawn a Fruit at 11,10
             GameField field = new GameField(20, 20, null, false);
+
+            Fruit f = new Fruit(field.RandomPointInField(), field, false);
+
+            field.Fruits.Add(f);
+
             field.Fruits[0].ResetPosition(new Point(11, 10));
 
             //Create a Snake at 10,10

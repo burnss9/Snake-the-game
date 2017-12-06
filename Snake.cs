@@ -137,7 +137,7 @@ namespace SnakeGame
             _tail.RemoveAt(_tail.Count - 1);
 
             //Eat the fruit if Snake's head and fruit have the same position
-            if (Head.Equals(_gameField.Fruits[0].Position))
+            if (_gameField.Fruits.Count > 0 && Head.Equals(_gameField.Fruits[0].Position))
             {
                 Eat(_gameField.Fruits[0]);
             }

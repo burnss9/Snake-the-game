@@ -102,7 +102,6 @@ namespace SnakeGame
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
-            _gameField.ClearField();
 
             foreach (Snake s in _gameField.Snakes)
             {
