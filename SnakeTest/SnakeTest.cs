@@ -17,7 +17,6 @@ namespace SnakeGameTest
 
             Assert.AreEqual(9, s.Head.Y);
             Assert.AreEqual(10, s.Head.X);
-
         }
 
         //Affirm that SetDirection moves the Snake downwards by increasing its Y value
@@ -56,7 +55,7 @@ namespace SnakeGameTest
             Assert.AreEqual(10, s.Head.Y);
         }
 
-        
+
         [Test]
         public void SnakeEatTest()
         {
@@ -177,6 +176,91 @@ namespace SnakeGameTest
             }
 
         }
+
+
+        [Test]
+        public void SnakeRespawnTest()
+        {
+            //Create a GameField and spawn a Fruit at 11,10
+            GameField field = new GameField(20, 20, null, false);
+
+            Fruit f = new Fruit(field.RandomPointInField(), field, false);
+
+            field.Fruits.Add(f);
+
+            field.Fruits[0].ResetPosition(new Point(11, 10));
+
+            //Create a Snake at 10,10
+            Snake s = new Snake(new Point(10, 10), field, false);
+
+            field.Snakes.Add(s);
+
+            s.SetDirection(Direction.Right);
+            s.Move(true);
+            s.Move(true);
+            field.Fruits[0].ResetPosition(new Point(12, 10));
+            s.Move(true);
+
+            s.Respawn();
+
+            Assert.AreNotEqual(new Point(10, 10), s.Head);
+            Assert.AreEqual(0, s.Tail.Count);
+
+        }
+
+        [Test]
+        public void SnakeSetDirectionTest()
+        {
+            //Create a GameField and spawn a Fruit at 11,10
+            GameField field = new GameField(20, 20, null, false);
+
+            Fruit f = new Fruit(field.RandomPointInField(), field, false);
+
+            field.Fruits.Add(f);
+
+            field.Fruits[0].ResetPosition(new Point(11, 10));
+
+            //Create a Snake at 10,10
+            Snake s = new Snake(new Point(10, 10), field, false);
+
+            field.Snakes.Add(s);
+
+            s.SetDirection(Direction.Right);
+            s.Move(true);
+            s.Move(true);
+            field.Fruits[0].ResetPosition(new Point(12, 10));
+            s.Move(true);
+            field.Fruits[0].ResetPosition(new Point(13, 10));
+            s.Move(true);
+
+
+            s.SetDirection(Direction.Right);
+            s.Move(true);
+            s.SetDirection(Direction.Left);
+            s.Move(true);
+            Assert.AreNotEqual(Direction.Left, s.Dir);
+
+            s.SetDirection(Direction.Up);
+            s.Move(true);
+            s.SetDirection(Direction.Down);
+            s.Move(true);
+            Assert.AreNotEqual(Direction.Down, 
+                s.Dir);
+
+            s.SetDirection(Direction.Left);
+            s.Move(true);
+            s.SetDirection(Direction.Right);
+            s.Move(true);
+            Assert.AreNotEqual(Direction.Right, s.Dir);
+
+            s.SetDirection(Direction.Down);
+            s.Move(true);
+            s.SetDirection(Direction.Up);
+            s.Move(true);
+            Assert.AreNotEqual(Direction.Up, s.Dir);
+
+        }
+
 
     }
 }

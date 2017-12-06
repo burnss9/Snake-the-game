@@ -206,7 +206,7 @@ namespace SnakeGame
             }
         }
 
-        private void Respawn()
+        public void Respawn()
         {
 
             _tail = new List<Point>();
