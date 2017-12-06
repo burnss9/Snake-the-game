@@ -101,7 +101,7 @@ namespace SnakeGame
 
 
 
-        public void RegisterPlayer(Socket s)
+        public void RegisterPlayer(Socket s, bool loadTexture = true)
         {
 
             int id = Players;
@@ -111,7 +111,7 @@ namespace SnakeGame
 
             ObjectNetID objectNetID = new ObjectNetID(Objects++, id);
 
-            NetworkObjects.Add(objectNetID, game.RegisterSnake(objectNetID));
+            NetworkObjects.Add(objectNetID, game.RegisterSnake(objectNetID, loadTexture));
 
             SocketAsyncEventArgs args = new SocketAsyncEventArgs();
             args.SetBuffer(playerJoinInfo, 0, playerJoinInfo.Count());
@@ -131,7 +131,7 @@ namespace SnakeGame
         }
 
 
-        public void RegisterFruit()
+        public void RegisterFruit(bool loadTexture = true)
         {
 
             int id = 0;
@@ -140,7 +140,7 @@ namespace SnakeGame
 
             ObjectNetID objectNetID = new ObjectNetID(Objects++, id);
 
-            NetworkObjects.Add(objectNetID, game.RegisterFruit(objectNetID));
+            NetworkObjects.Add(objectNetID, game.RegisterFruit(objectNetID, loadTexture));
 
 
             foreach (var o in NetworkObjects)

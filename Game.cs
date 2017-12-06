@@ -24,10 +24,10 @@ namespace SnakeGame
         public bool hostGame = true;
         
         //Game constructor
-        public Game(int aWidth, int aHeight, int difficulty, string ip = "") : base(32 * aWidth, 32 * aHeight)
+        public Game(int aWidth, int aHeight, int difficulty, string ip = "", bool loadTextures = true) : base(32 * aWidth, 32 * aHeight)
         {
             this.difficulty = difficulty;
-            _gameField = new GameField(aWidth, aHeight, this);
+            _gameField = new GameField(aWidth, aHeight, this, loadTextures);
 
             hostGame = ip == "" ? true : false;
 
@@ -35,8 +35,8 @@ namespace SnakeGame
 
             if (hostGame)
             {
-                networkManager.RegisterPlayer(null);
-                networkManager.RegisterFruit();
+                networkManager.RegisterPlayer(null, loadTextures);
+                networkManager.RegisterFruit(loadTextures);
             }
             _gameOver = false;
         }
@@ -111,8 +111,7 @@ namespace SnakeGame
             networkManager.NetworkTick();
 
         }
-        
-        byte[] serialized = null;
+
         //Keyboard input, WASD moves Snake up, down, left, and right
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
@@ -161,31 +160,24 @@ namespace SnakeGame
                 using (InGameMenu inGame = new InGameMenu(this))
                     inGame.Run(120, 60);
             }
-            if(e.Key == Key.Comma)
-            {
-                serialized = turningSnake.Serialize();
-            }
-            if (e.Key == Key.Period && serialized != null) 
-            {
-                turningSnake.Deserialize(serialized);
-            }
+
 
         }
 
-        public Fruit RegisterFruit(ObjectNetID objectNetID)
+        public Fruit RegisterFruit(ObjectNetID objectNetID, bool loadTexture = true)
         {
 
-            Fruit f = new Fruit(_gameField.RandomPointInField(), _gameField);
+            Fruit f = new Fruit(_gameField.RandomPointInField(), _gameField, loadTexture);
 
             _gameField.Fruits.Add(f);
 
             return f;
         }
 
-        public Snake RegisterSnake(ObjectNetID ID)
+        public Snake RegisterSnake(ObjectNetID ID, bool loadTexture = true)
         {
 
-            Snake snake = new Snake(_gameField.RandomPointInField(), _gameField)
+            Snake snake = new Snake(_gameField.RandomPointInField(), _gameField, loadTexture)
             {
                 objectNetID = ID
             };
