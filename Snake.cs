@@ -86,21 +86,21 @@ namespace SnakeGame
         //Set Snake's Direction
         public void SetDirection(Direction direction)
         {
-            if (Dir == Direction.Down && direction == Direction.Up)
+            if (Dir == Direction.Down && direction == Direction.Up && _tail.Count() != 0)
             {
 
             }
-            else if (Dir == Direction.Up && direction == Direction.Down)
-            {
-
-
-            }
-            else if (Dir == Direction.Right && direction == Direction.Left)
+            else if (Dir == Direction.Up && direction == Direction.Down && _tail.Count() != 0)
             {
 
 
             }
-            else if (Dir == Direction.Left && direction == Direction.Right)
+            else if (Dir == Direction.Right && direction == Direction.Left && _tail.Count() != 0)
+            {
+
+
+            }
+            else if (Dir == Direction.Left && direction == Direction.Right && _tail.Count() != 0)
             {
 
 
