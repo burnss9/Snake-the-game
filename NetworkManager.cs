@@ -391,7 +391,6 @@ namespace SnakeGame
 
             while (active)
             {
-                Console.Clear();
                 Console.WriteLine("Accepting...");
                    
                 try
