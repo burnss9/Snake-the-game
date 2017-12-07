@@ -10,14 +10,5 @@ namespace SnakeGame
     {
         //old console ui code
         public static readonly int CELL_SIZE = 32;
-
-        public string Val { get; set; }
-        public ConsoleColor Color { get; set; }
-
-        public Cell(string aVal, ConsoleColor aColor)
-        {
-            Val = aVal;
-            Color = aColor;
-        }
     }
 }

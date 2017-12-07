@@ -88,7 +88,7 @@ namespace SnakeGame
                     Host.Receive(message);
                     Console.WriteLine("received");
                     LocalClientID = BitConverter.ToInt32(message, 0);
-
+                    
                 }
                 catch (Exception)
                 {
@@ -101,7 +101,7 @@ namespace SnakeGame
 
 
 
-        public void RegisterPlayer(Socket s)
+        public void RegisterPlayer(Socket s, bool loadTexture = true)
         {
 
             int id = Players;
@@ -111,7 +111,7 @@ namespace SnakeGame
 
             ObjectNetID objectNetID = new ObjectNetID(Objects++, id);
 
-            NetworkObjects.Add(objectNetID, game.RegisterSnake(objectNetID));
+            NetworkObjects.Add(objectNetID, game.RegisterSnake(objectNetID, loadTexture));
 
             SocketAsyncEventArgs args = new SocketAsyncEventArgs();
             args.SetBuffer(playerJoinInfo, 0, playerJoinInfo.Count());
@@ -120,6 +120,7 @@ namespace SnakeGame
             {
                 Clients.Add(id, s);
                 s.SendAsync(args);
+
             }
 
             foreach (var o in NetworkObjects)
@@ -130,7 +131,7 @@ namespace SnakeGame
         }
 
 
-        public void RegisterFruit()
+        public void RegisterFruit(bool loadTexture = true)
         {
 
             int id = 0;
@@ -139,7 +140,7 @@ namespace SnakeGame
 
             ObjectNetID objectNetID = new ObjectNetID(Objects++, id);
 
-            NetworkObjects.Add(objectNetID, game.RegisterFruit(objectNetID));
+            NetworkObjects.Add(objectNetID, game.RegisterFruit(objectNetID, loadTexture));
 
 
             foreach (var o in NetworkObjects)
@@ -398,7 +399,7 @@ namespace SnakeGame
                     manager.RegisterPlayer(socket.Accept());
                     Console.WriteLine("Accepted");
                 }
-                catch (SocketException se)
+                catch (SocketException)
                 {
                 Console.WriteLine("Server Closed");
                 }
